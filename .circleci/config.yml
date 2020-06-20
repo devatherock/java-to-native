@@ -20,6 +20,7 @@ jobs:
     <<: *resource_class
     <<: *work_directory
     environment:
+      VELA: true
       PARAMETER_SCRIPT_PATH: CreateNativeImage.groovy
     steps:
       - checkout
