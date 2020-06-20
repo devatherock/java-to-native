@@ -1,0 +1,94 @@
+docker_image: &docker_image
+  docker:
+    - image: docker:19.03.6
+
+slack_image: &slack_image
+  docker:
+    - image: devatherock/simple-slack:0.4.0
+
+work_directory: &work_directory
+  working_directory: ~/java-to-native
+
+resource_class: &resource_class
+  resource_class: small
+
+version: 2.1
+jobs:
+  groovy_script_to_jar:
+    docker:
+      - image: devatherock/vela-groovy-script-to-jar:0.6.0
+    <<: *resource_class
+    <<: *work_directory
+    environment:
+      PARAMETER_SCRIPT_PATH: CreateNativeImage.groovy
+    steps:
+      - checkout
+      - run: sh /scripts/entry-point.sh
+      - persist_to_workspace:
+          root: ~/java-to-native
+          paths:
+            - CreateNativeImage.jar
+  publish:
+    <<: *docker_image
+    <<: *resource_class
+    <<: *work_directory
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: ~/java-to-native
+      - run: |
+          TAG=0.1.0
+          docker build -t devatherock/java-to-native:$TAG .
+          docker tag devatherock/java-to-native:$TAG devatherock/java-to-native:latest
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push devatherock/java-to-native:$TAG
+          docker push devatherock/java-to-native:latest
+
+  notify_success:
+    <<: *slack_image
+    <<: *resource_class
+    environment:
+      TEXT: "Success: {{.CircleBuildUrl}} by {{.CircleUsername}}"
+      COLOR: "#33ad7f"
+      CHANNEL: general
+      TITLE: "Build completed"
+    steps:
+      - run: /bin/simpleslack
+  notify_failure:
+    <<: *slack_image
+    <<: *resource_class
+    environment:
+      TEXT: "Failure: {{.CircleBuildUrl}} by {{.CircleUsername}}"
+      COLOR: "#a1040c"
+      CHANNEL: general
+      TITLE: "Build completed"
+    steps:
+      - run:
+          name: Failure notification
+          command: /bin/simpleslack
+          when: on_fail
+
+workflows:
+  version: 2.1
+  build_publish:
+    jobs:
+      - groovy_script_to_jar:
+          filters:
+            branches:
+              only: master
+      - publish:
+          requires:
+            - groovy_script_to_jar
+      - notify_success:
+          requires:
+            - publish
+      - notify_failure:
+          requires:
+            - publish
+  pr_check:
+    jobs:
+      - groovy_script_to_jar:
+          filters:
+            branches:
+              ignore: master
