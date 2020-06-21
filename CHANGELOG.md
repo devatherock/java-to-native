@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.2] - 2020-06-21
+### Changed
+- Stopped using environment variable `VELA`
+
 ## [0.1.1] - 2020-06-20
 ### Added
 - `--static` and `--no-fallback` options as default

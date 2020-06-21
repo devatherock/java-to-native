@@ -16,11 +16,10 @@ version: 2.1
 jobs:
   groovy_script_to_jar:
     docker:
-      - image: devatherock/vela-groovy-script-to-jar:0.6.0
+      - image: devatherock/vela-groovy-script-to-jar:0.6.2
     <<: *resource_class
     <<: *work_directory
     environment:
-      VELA: true
       PARAMETER_SCRIPT_PATH: CreateNativeImage.groovy
     steps:
       - checkout
@@ -39,7 +38,7 @@ jobs:
       - attach_workspace:
           at: ~/java-to-native
       - run: |
-          TAG=0.1.1
+          TAG=0.1.2
           docker build -t devatherock/java-to-native:$TAG .
           docker tag devatherock/java-to-native:$TAG devatherock/java-to-native:latest
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD

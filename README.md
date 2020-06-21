@@ -15,7 +15,7 @@ Execute from the working directory:
 docker run --rm \
   -e PLUGIN_JAR_NAME=YamlValidator.jar \
   -e PLUGIN_CONFIG_FILE=config/graal.yml \
-  devatherock/java-to-native:0.1.0
+  devatherock/java-to-native:0.1.2
 ```
 
 ## Configuration
@@ -28,8 +28,6 @@ native-image:
   build:
     # Additional arguments to pass to the native image build
     additional-args:
-      - "--static"
-      - "--no-fallback"
       - "-H:IncludeResourceBundles=net.sourceforge.argparse4j.internal.ArgumentParserImpl"
     # If specified, only these arguments will be passed to the image build
     #override-args:
