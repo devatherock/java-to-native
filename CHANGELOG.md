@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.3] - 2020-06-21
+### Changed
+- Fixed the bug that was making config file mandatory
+
 ## [0.1.2] - 2020-06-21
 ### Changed
 - Stopped using environment variable `VELA`

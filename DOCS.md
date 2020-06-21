@@ -13,7 +13,7 @@ The following parameters can be set to configure the plugin.
 ```yaml
 java_to_native:
   docker:
-    - image: devatherock/java-to-native:0.1.2
+    - image: devatherock/java-to-native:0.1.3
   working_directory: ~/drone-yaml-validator
   environment:
     PLUGIN_JAR_NAME: build/native/libs/YamlValidator.jar
@@ -37,7 +37,7 @@ steps:
     ruleset:
       branch: master
       event: push
-    image: devatherock/java-to-native:0.1.2
+    image: devatherock/java-to-native:0.1.3
     parameters:
       jar_name: build/native/libs/YamlValidator.jar
       config_file: config/graal.yml

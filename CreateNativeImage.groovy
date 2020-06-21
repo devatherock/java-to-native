@@ -42,11 +42,10 @@ if (options.d) {
 }
 
 // Read config file
-String configFile = options.c
 def config = [:]
-if (configFile) {
+if (options.c) {
     Yaml yaml = new Yaml()
-    config.putAll(getFlattenedMap('', yaml.load(new File(configFile).text)))
+    config.putAll(getFlattenedMap('', yaml.load(new File(options.c).text)))
 }
 logger.fine({ String.valueOf(config) })
 
