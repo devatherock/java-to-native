@@ -39,7 +39,7 @@ jobs:
       - attach_workspace:
           at: ~/java-to-native
       - run: |
-          TAG=0.1.0
+          TAG=0.1.1
           docker build -t devatherock/java-to-native:$TAG .
           docker tag devatherock/java-to-native:$TAG devatherock/java-to-native:latest
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
