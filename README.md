@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/devatherock/java-to-native.svg?style=svg)](https://circleci.com/gh/devatherock/java-to-native)
+[![Version](https://img.shields.io/docker/v/devatherock/java-to-native?sort=date)](https://hub.docker.com/r/devatherock/java-to-native/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/devatherock/java-to-native.svg)](https://hub.docker.com/r/devatherock/java-to-native/)
 [![Docker Image Size](https://img.shields.io/docker/image-size/devatherock/java-to-native.svg?sort=date)](https://hub.docker.com/r/devatherock/java-to-native/)
 [![Docker Image Layers](https://img.shields.io/microbadger/layers/devatherock/java-to-native.svg)](https://microbadger.com/images/devatherock/java-to-native)
