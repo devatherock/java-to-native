@@ -107,8 +107,8 @@ def nativeImageCommand = ['native-image', '-cp', classPath]
 if (config[CONFIG_BUILD_OVERRIDE_ARGS]) {
     nativeImageCommand.addAll(config[CONFIG_BUILD_OVERRIDE_ARGS])
 } else {
-    nativeImageCommand.addAll([ARG_GRAPE_DISABLE, '--no-server', '--static', '--allow-incomplete-classpath',
-                               '--no-fallback', '--report-unsupported-elements-at-runtime', '--initialize-at-build-time',
+    nativeImageCommand.addAll([ARG_GRAPE_DISABLE, '--static',
+                               '--no-fallback', '--report-unsupported-elements-at-runtime',
                                '--enable-url-protocols=http,https', "-H:ConfigurationFileDirectories=${reflectConfigPath}"])
 
     if (config[CONFIG_BUILD_ADDITIONAL_ARGS]) {

@@ -1,22 +1,34 @@
-docker_image: &docker_image
-  docker:
-    - image: docker:19.03.6
-
 slack_image: &slack_image
   docker:
-    - image: devatherock/simple-slack:0.4.0
+    - image: devatherock/simple-slack:0.7.0
+      auth:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
 
 work_directory: &work_directory
   working_directory: ~/java-to-native
 
 resource_class: &resource_class
   resource_class: small
+  
+executors:
+  jdk-executor:
+    docker:
+      - image: cimg/openjdk:11.0
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
+    <<: *resource_class
+    <<: *work_directory  
 
 version: 2.1
 jobs:
   groovy_script_to_jar:
     docker:
       - image: devatherock/vela-groovy-script-to-jar:0.6.2
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
     <<: *resource_class
     <<: *work_directory
     environment:
@@ -29,21 +41,34 @@ jobs:
           paths:
             - CreateNativeImage.jar
   publish:
-    <<: *docker_image
-    <<: *resource_class
-    <<: *work_directory
+    executor: jdk-executor
     steps:
       - checkout
       - setup_remote_docker
       - attach_workspace:
           at: ~/java-to-native
       - run: |
-          TAG=0.1.3
+          TAG=${CIRCLE_SHA1:0:8}
           docker build -t devatherock/java-to-native:$TAG .
           docker tag devatherock/java-to-native:$TAG devatherock/java-to-native:latest
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push devatherock/java-to-native:$TAG
           docker push devatherock/java-to-native:latest
+          
+  publish_release:
+    executor: jdk-executor
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: ~/java-to-native
+      - run: |
+          TAG=${CIRCLE_TAG#v}
+          DEV_TAG=${CIRCLE_SHA1:0:8}
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker pull devatherock/java-to-native:$DEV_TAG
+          docker tag devatherock/java-to-native:$DEV_TAG devatherock/java-to-native:$TAG
+          docker push devatherock/java-to-native:$TAG               
 
   notify_success:
     <<: *slack_image
@@ -55,40 +80,46 @@ jobs:
       TITLE: "Build completed"
     steps:
       - run: /bin/simpleslack
-  notify_failure:
-    <<: *slack_image
-    <<: *resource_class
-    environment:
-      TEXT: "Failure: {{.CircleBuildUrl}} by {{.CircleUsername}}"
-      COLOR: "#a1040c"
-      CHANNEL: general
-      TITLE: "Build completed"
-    steps:
-      - run:
-          name: Failure notification
-          command: /bin/simpleslack
-          when: on_fail
 
 workflows:
   version: 2.1
   build_publish:
     jobs:
       - groovy_script_to_jar:
+          context:
+            - docker-credentials
           filters:
             branches:
               only: master
       - publish:
+          context:
+            - docker-credentials
           requires:
             - groovy_script_to_jar
       - notify_success:
           requires:
             - publish
-      - notify_failure:
+  release:
+    jobs:
+      - publish_release:
+          context:
+            - docker-credentials
+          filters:
+            branches:
+              only: non-existent-branch
+            tags:
+              only: /^v[0-9\.]+$/
+      - notify_success:
+          context:
+            - docker-credentials
+            - slack-webhook
           requires:
-            - publish
+            - publish_release
   pr_check:
     jobs:
       - groovy_script_to_jar:
+          context:
+            - docker-credentials
           filters:
             branches:
               ignore: master

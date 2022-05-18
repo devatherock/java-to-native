@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Changed
+- [#1](https://github.com/devatherock/java-to-native/issues/1): Upgraded base image to graalvm 22.x
+
 ## [0.1.3] - 2020-06-21
 ### Changed
 - Fixed the bug that was making config file mandatory
