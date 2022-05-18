@@ -2,7 +2,6 @@
 [![Version](https://img.shields.io/docker/v/devatherock/java-to-native?sort=date)](https://hub.docker.com/r/devatherock/java-to-native/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/devatherock/java-to-native.svg)](https://hub.docker.com/r/devatherock/java-to-native/)
 [![Docker Image Size](https://img.shields.io/docker/image-size/devatherock/java-to-native.svg?sort=date)](https://hub.docker.com/r/devatherock/java-to-native/)
-[![Docker Image Layers](https://img.shields.io/microbadger/layers/devatherock/java-to-native.svg)](https://microbadger.com/images/devatherock/java-to-native)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # java-to-native
 CI plugin to convert a java program into a [graalvm native image](https://www.graalvm.org/docs/reference-manual/native-image/). 
@@ -14,8 +13,10 @@ Execute from the working directory:
 
 ```
 docker run --rm \
-  -e PLUGIN_JAR_NAME=YamlValidator.jar \
-  -e PLUGIN_CONFIG_FILE=config/graal.yml \
+  -v path/to/jar:/work \
+  -w=/work \
+  -e PLUGIN_JAR_NAME=/work/build/native/libs/YamlValidator.jar \
+  -e PLUGIN_CONFIG_FILE=/work/config/graal.yml \
   devatherock/java-to-native:0.1.3
 ```
 
