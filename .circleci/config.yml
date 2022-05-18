@@ -97,6 +97,9 @@ workflows:
           requires:
             - groovy_script_to_jar
       - notify_success:
+          context:
+            - docker-credentials
+            - slack-webhook
           requires:
             - publish
   release:
