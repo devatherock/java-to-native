@@ -55,6 +55,20 @@ jobs:
           docker push devatherock/java-to-native:$TAG
           docker push devatherock/java-to-native:latest
           
+  dockerhub_readme:
+    machine:
+      image: ubuntu-2204:2023.04.2
+    steps:
+      - checkout
+      - run: |
+          docker run -v $PWD:/workspace \
+              -e DOCKERHUB_USERNAME \
+              -e DOCKERHUB_PASSWORD \
+              -e DOCKERHUB_REPOSITORY='devatherock/java-to-native' \
+              -e SHORT_DESCRIPTION='CI plugin to convert a java program into a graalvm native image' \
+              -e README_FILEPATH='/workspace/README.md' \
+              peterevans/dockerhub-description:3.4.1
+          
   publish_release:
     executor: jdk-executor
     steps:
@@ -96,12 +110,18 @@ workflows:
             - docker-credentials
           requires:
             - groovy_script_to_jar
+      - dockerhub_readme:
+          context:
+            - docker-credentials
+            - dockerhub-readme-credentials
+          requires:
+            - publish
       - notify_success:
           context:
             - docker-credentials
             - slack-webhook
           requires:
-            - publish
+            - dockerhub_readme
   release:
     jobs:
       - publish_release:
