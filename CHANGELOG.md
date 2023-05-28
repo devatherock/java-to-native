@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - Updated dockerhub readme in CI pipeline
+- [#7](https://github.com/devatherock/java-to-native/issues/7): Merged contents of `DOCS.md` into `README.md`
 
 ## [1.0.0] - 2022-05-17
 ### Changed
