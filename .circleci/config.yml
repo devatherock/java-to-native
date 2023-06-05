@@ -51,13 +51,14 @@ jobs:
           TAG=${CIRCLE_SHA1:0:8}
           docker build -t devatherock/java-to-native:$TAG .
           docker tag devatherock/java-to-native:$TAG devatherock/java-to-native:latest
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker push devatherock/java-to-native:$TAG
           docker push devatherock/java-to-native:latest
           
   dockerhub_readme:
     machine:
       image: ubuntu-2204:2023.04.2
+      resource_class: medium
     steps:
       - checkout
       - run: |
@@ -79,7 +80,7 @@ jobs:
       - run: |
           TAG=${CIRCLE_TAG#v}
           DEV_TAG=${CIRCLE_SHA1:0:8}
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker pull devatherock/java-to-native:$DEV_TAG
           docker tag devatherock/java-to-native:$DEV_TAG devatherock/java-to-native:$TAG
           docker push devatherock/java-to-native:$TAG               
