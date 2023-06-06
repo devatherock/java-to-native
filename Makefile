@@ -1,4 +1,4 @@
-DOCKER_TAG=latest
+docker_tag=latest
 
 jar-build:
 	docker run --rm \
@@ -7,4 +7,4 @@ jar-build:
 	-e PARAMETER_SCRIPT_PATH=CreateNativeImage.groovy \
 	devatherock/vela-groovy-script-to-jar:0.6.2
 docker-build:
-	docker build -t devatherock/java-to-native:$(DOCKER_TAG) .
+	docker build -t devatherock/java-to-native:$(docker_tag) .
