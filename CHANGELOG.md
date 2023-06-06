@@ -4,6 +4,8 @@
 ### Changed
 - Updated dockerhub readme in CI pipeline
 - [#7](https://github.com/devatherock/java-to-native/issues/7): Merged contents of `DOCS.md` into `README.md`
+- [#4](https://github.com/devatherock/java-to-native/issues/4): Built a multi-arch docker image
+- Upgraded graalvm from `22.1.0` to `22.3.2`
 
 ## [1.0.0] - 2022-05-17
 ### Changed
