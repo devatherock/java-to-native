@@ -1,7 +1,7 @@
-FROM devatherock/graalvm:ol8-java11-22.1.0-2
+FROM ghcr.io/graalvm/native-image:ol8-java11-22.3.2
 
 LABEL maintainer="devatherock@gmail.com"
-LABEL io.github.devatherock.version="1.0.0"
+LABEL io.github.devatherock.version="2.0.0"
 
 RUN microdnf -y install xz \
 	&& microdnf clean all \
