@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 ### Changed
+- Updated base image with upx binary of correct architecture
+
+## [2.1.0] - 2023-06-06
+### Changed
 - Used custom graalvm base image that contains gzip and tar
 
 ## [2.0.0] - 2023-06-06
