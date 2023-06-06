@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 ### Changed
+- Used custom graalvm base image that contains gzip and tar
+
+## [2.0.0] - 2023-06-06
+### Changed
 - Updated dockerhub readme in CI pipeline
 - [#7](https://github.com/devatherock/java-to-native/issues/7): Merged contents of `DOCS.md` into `README.md`
 - [#4](https://github.com/devatherock/java-to-native/issues/4): Built a multi-arch docker image
