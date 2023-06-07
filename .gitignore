@@ -1,5 +1,6 @@
 .project
 *.jar
+!gradle-wrapper.jar
 *.iml
 .gradle
 code-formatter.xml
