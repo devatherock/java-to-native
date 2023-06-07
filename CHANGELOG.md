@@ -1,6 +1,13 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- [#3](https://github.com/devatherock/java-to-native/issues/3): Functional tests
+
+### Changed
+- [#5](https://github.com/devatherock/java-to-native/issues/5): Used latest `scriptjar`
+
+## [2.2.0] - 2023-06-06
 ### Changed
 - Updated base image with upx binary of correct architecture
 

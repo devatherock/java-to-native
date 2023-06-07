@@ -1,0 +1,11 @@
+native-image:
+  build:
+    additional-args:
+      - "-J-Xmx3072m"
+  agent:
+    args:
+      - ['--name', 'World']
+      - ['-n', 'World']
+      - ['--help']
+      - ['-n', 'World', '-m', 'Welcome']
+      - []

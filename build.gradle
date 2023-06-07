@@ -1,0 +1,34 @@
+plugins {
+    id 'groovy'
+    id 'com.diffplug.spotless' version '6.19.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+dependencies {
+    testImplementation group: 'org.spockframework', name: 'spock-core', version: '2.3-groovy-4.0'
+}
+
+sourceSets {
+    main {
+        groovy {
+            srcDirs = ['.']
+            exclude([
+                '**/test/**',
+                'build/**',
+                'bin/**'
+            ])
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+apply from: 'https://raw.githubusercontent.com/devatherock/gradle-includes/master/checks.gradle'
