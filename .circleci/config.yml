@@ -31,6 +31,16 @@ executors:
           username: $DOCKER_USERNAME
           password: $DOCKER_PASSWORD
     <<: *resource_class
+    <<: *work_directory
+  machine-executor:
+    machine:
+      image: ubuntu-2204:2023.04.2
+    resource_class: medium
+    <<: *work_directory
+  arm-executor:
+    machine:
+      image: ubuntu-2004:2022.04.1
+    resource_class: arm.medium
     <<: *work_directory  
 
 version: 2.1
@@ -85,9 +95,7 @@ jobs:
             -t devatherock/java-to-native:latest .
           
   dockerhub_readme:
-    machine:
-      image: ubuntu-2204:2023.04.2
-      resource_class: medium
+    executor: machine-executor
     steps:
       - checkout
       - run: |
@@ -98,6 +106,26 @@ jobs:
               -e SHORT_DESCRIPTION='CI plugin to convert a java program into a graalvm native image' \
               -e README_FILEPATH='/workspace/README.md' \
               peterevans/dockerhub-description:3.4.1
+
+  functional_test:
+    parameters:
+      runner:
+        type: executor
+    executor: << parameters.runner >>
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/java-to-native
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            - v1-dependencies-
+      - run: |
+          ./gradlew test
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
           
   publish_release:
     executor: jdk-executor
@@ -147,12 +175,27 @@ workflows:
             - dockerhub-readme-credentials
           requires:
             - publish
+      - functional_test:
+          name: functional_test_amd
+          context:
+            - docker-credentials
+          runner: machine-executor
+          requires:
+            - publish
+      - functional_test:
+          name: functional_test_arm
+          context:
+            - docker-credentials
+          runner: arm-executor
+          requires:
+            - dockerhub_readme
       - notify_success:
           context:
             - docker-credentials
             - slack-webhook
           requires:
-            - dockerhub_readme
+            - functional_test_amd
+            - functional_test_arm
 
   release:
     jobs:

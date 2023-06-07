@@ -1,14 +1,15 @@
 @Grab(group = 'org.yaml', module = 'snakeyaml', version = '1.25')
 @Grab(group = 'org.codehaus.groovy', module = 'groovy-cli-commons', version = '2.5.7')
 
-import groovy.cli.commons.CliBuilder
-import groovy.transform.Field
-import org.yaml.snakeyaml.Yaml
-
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.logging.Level
 import java.util.logging.Logger
+
+import groovy.cli.commons.CliBuilder
+import groovy.transform.Field
+
+import org.yaml.snakeyaml.Yaml
 
 @Field static final String CONFIG_AGENT_ARGS = 'native-image.agent.args'
 @Field static final String CONFIG_BUILD_ADDITIONAL_ARGS = 'native-image.build.additional-args'

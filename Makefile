@@ -1,5 +1,9 @@
 docker_tag=latest
 
+clean:
+	./gradlew clean
+test:
+	./gradlew spotlessApply test
 jar-build:
 	docker run --rm \
 	-v $(CURDIR):/work \
