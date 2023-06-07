@@ -1,5 +1,5 @@
-@Grab(group = 'org.yaml', module = 'snakeyaml', version = '1.25')
-@Grab(group = 'org.codehaus.groovy', module = 'groovy-cli-commons', version = '2.5.7')
+@Grab(group = 'org.yaml', module = 'snakeyaml', version = '2.0')
+@Grab(group = 'org.codehaus.groovy', module = 'groovy-cli-commons', version = '3.0.9')
 
 import java.nio.file.Files
 import java.nio.file.Paths
