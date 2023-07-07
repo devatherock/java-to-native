@@ -9,3 +9,4 @@ checkstyle.xml
 codenarc.xml
 Hello
 build
+/bin/

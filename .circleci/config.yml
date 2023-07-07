@@ -1,9 +1,12 @@
+docker_auth: &docker_auth
+  auth:
+    username: $DOCKER_USERNAME
+    password: $DOCKER_PASSWORD
+
 slack_image: &slack_image
   docker:
-    - image: devatherock/simple-slack:0.7.0
-      auth:
-        username: $DOCKER_USERNAME
-        password: $DOCKER_PASSWORD
+    - image: devatherock/simple-slack:1.0.0
+      <<: *docker_auth
 
 work_directory: &work_directory
   working_directory: ~/java-to-native
@@ -27,9 +30,7 @@ executors:
   jdk-executor:
     docker:
       - image: cimg/openjdk:11.0
-        auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_PASSWORD
+        <<: *docker_auth
     <<: *resource_class
     <<: *work_directory
   machine-executor:
@@ -48,9 +49,7 @@ jobs:
   groovy_script_to_jar:
     docker:
       - image: devatherock/scriptjar:2.0.0
-        auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_PASSWORD
+        <<: *docker_auth
     <<: *resource_class
     <<: *work_directory
     environment:
@@ -93,19 +92,23 @@ jobs:
             --push \
             -t devatherock/java-to-native:$TAG \
             -t devatherock/java-to-native:latest .
-          
+
   dockerhub_readme:
-    executor: machine-executor
+    docker:
+      - image: peterevans/dockerhub-description:3.4.2
+        <<: *docker_auth
+    <<: *resource_class
+    <<: *work_directory
+    environment:
+      DOCKERHUB_REPOSITORY: 'devatherock/java-to-native'
+      SHORT_DESCRIPTION: 'CI plugin to convert a java program into a graalvm native image'
+      README_FILEPATH: README.md
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/java-to-native
       - run: |
-          docker run -v $PWD:/workspace \
-              -e DOCKERHUB_USERNAME \
-              -e DOCKERHUB_PASSWORD \
-              -e DOCKERHUB_REPOSITORY='devatherock/java-to-native' \
-              -e SHORT_DESCRIPTION='CI plugin to convert a java program into a graalvm native image' \
-              -e README_FILEPATH='/workspace/README.md' \
-              peterevans/dockerhub-description:3.4.1
+          sh /entrypoint.sh
 
   functional_test:
     parameters:
@@ -122,6 +125,8 @@ jobs:
             - v1-dependencies-
       - run: |
           make test
+      - store_test_results:
+          path: build/test-results
       - save_cache:
           paths:
             - ~/.gradle
